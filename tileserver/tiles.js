@@ -65,9 +65,10 @@ function render(map, x, y, z, callback) {
 function route(app) {
     app.get("/map/:z/:x/:y.png", function(req, resp) {
         var p = req.params;
-        acquire("tiles.xml", {}, function(err, map) {
+        acquire("tiles.xml", {size: 1}, function(err, map) {
             if (err) return resp.send(500, err.message);
 
+            console.log("render: ", [ +p.x, +p.y, +p.z], mercator.xyz_to_envelope(+p.x, +p.y, +p.z));
             render(map, +p.x, +p.y, +p.z, function(err, buffer) {
                 process.nextTick(function() { maps.release("tiles.xml", map); });
                 if (err) return resp.send(500, err.message);
