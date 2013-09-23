@@ -43,6 +43,11 @@ Render result for [test/test.js](https://github.com/hamer/mapnik-mongo/blob/mast
 ![west](https://raw.github.com/hamer/mapnik-mongo/master/test/1.png)
 ![east](https://raw.github.com/hamer/mapnik-mongo/master/test/2.png)
 
+# Debug
+
+To debug deeper, I used tilemap server, which i got from [examples](https://github.com/mapnik/node-mapnik-sample-code) repo. There are some issues on higher zoom level not fixed yet.
+
+
 # Setup
 
 1) Install MongoDB with C++ driver (libmongoclient)
