@@ -128,10 +128,10 @@ featureset_ptr mongodb_datasource::features(const query &q) const {
 
         if (conn && conn->isOK()) {
             mapnik::context_ptr ctx = boost::make_shared<mapnik::context_type>();
-
+            boost::mutex::scoped_lock lock(*conn->mutex);
 
             boost::shared_ptr<mongo::DBClientCursor> rs(conn->query(json_bbox(box)));
-            return boost::make_shared<mongodb_featureset>(rs, ctx, desc_.get_encoding());
+            return boost::make_shared<mongodb_featureset>(rs, ctx, desc_.get_encoding(), conn->mutex);
         }
     }
 
@@ -148,10 +148,11 @@ featureset_ptr mongodb_datasource::features_at_point(const coord2d &pt, double t
 
         if (conn->isOK()) {
             mapnik::context_ptr ctx = boost::make_shared<mapnik::context_type>();
+            boost::mutex::scoped_lock lock(*conn->mutex);
 
             box2d<double> box(pt.x - tol, pt.y - tol, pt.x + tol, pt.y + tol);
             boost::shared_ptr<mongo::DBClientCursor> rs(conn->query(json_bbox(box)));
-            return boost::make_shared<mongodb_featureset>(rs, ctx, desc_.get_encoding());
+            return boost::make_shared<mongodb_featureset>(rs, ctx, desc_.get_encoding(), conn->mutex);
         }
     }
 
@@ -193,6 +194,7 @@ boost::optional<mapnik::datasource::geometry_t> mongodb_datasource::get_geometry
             return result;
 
         if (conn->isOK()) {
+            boost::mutex::scoped_lock lock(*conn->mutex);
             boost::shared_ptr <mongo::DBClientCursor> rs(conn->query("{ geometry: { \"$exists\": true } }", 1));
             try {
                 if (rs->more()) {

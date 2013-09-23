@@ -32,6 +32,7 @@
 // boost
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/thread/mutex.hpp>
 
 // std
 #include <sstream>
@@ -43,8 +44,10 @@ class Connection {
     bool closed_;
 
 public:
+    boost::shared_ptr<boost::mutex> mutex;
+
     Connection(const std::string &connection_str, const std::string ns)
-        : ns_(ns), closed_(false) {
+        : ns_(ns), closed_(false), mutex(new boost::mutex()) {
         try {
             conn_.reset(mongo::ScopedDbConnection::getScopedDbConnection(connection_str));
         } catch (mongo::DBException &de) {

@@ -36,6 +36,7 @@
 
 // boost
 #include <boost/scoped_ptr.hpp>
+#include <boost/thread/mutex.hpp>
 
 using mapnik::Featureset;
 using mapnik::box2d;
@@ -48,11 +49,13 @@ class mongodb_featureset : public mapnik::Featureset {
     context_ptr ctx_;
     boost::scoped_ptr<mapnik::transcoder> tr_;
     mapnik::value_integer feature_id_;
+    boost::shared_ptr<boost::mutex> mutex_;
 
 public:
     mongodb_featureset(const boost::shared_ptr<mongo::DBClientCursor> &rs,
                        const context_ptr &ctx,
-                       const std::string &encoding);
+                       const std::string &encoding,
+                       const boost::shared_ptr<boost::mutex> &mutex);
     ~mongodb_featureset();
 
     feature_ptr next();

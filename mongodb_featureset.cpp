@@ -56,17 +56,21 @@ using mapnik::context_ptr;
 
 mongodb_featureset::mongodb_featureset(const boost::shared_ptr<mongo::DBClientCursor> &rs,
                                        const context_ptr &ctx,
-                                       const std::string &encoding)
+                                       const std::string &encoding,
+                                       const boost::shared_ptr<boost::mutex> &mutex)
     : rs_(rs),
       ctx_(ctx),
       tr_(new transcoder(encoding)),
-      feature_id_(0) {
+      feature_id_(0),
+      mutex_(mutex) {
 }
 
 mongodb_featureset::~mongodb_featureset() {
 }
 
 feature_ptr mongodb_featureset::next() {
+    boost::mutex::scoped_lock lock(*mutex_);
+
     while (rs_->more()) {
         mapnik::feature_ptr feature(new mapnik::Feature(ctx_, feature_id_));
 
