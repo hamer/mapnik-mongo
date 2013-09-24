@@ -36,7 +36,7 @@ connector.open(function(err, db) {
 function importShp(name, collection) {
     var dataSource = new mapnik.Datasource({
             type: "shape",
-            file: path.join("shp", name)
+            file: name
         }),
         featureSet = dataSource.featureset(), feature;
 
