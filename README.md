@@ -43,11 +43,6 @@ Render result for [test/test.js](https://github.com/hamer/mapnik-mongo/blob/mast
 ![west](https://raw.github.com/hamer/mapnik-mongo/master/test/1.png)
 ![east](https://raw.github.com/hamer/mapnik-mongo/master/test/2.png)
 
-# Debug
-
-To debug deeper, I used tilemap server, which i got from [examples](https://github.com/mapnik/node-mapnik-sample-code) repo. There are some issues on higher zoom level not fixed yet.
-
-
 # Setup
 
 1) Install MongoDB with C++ driver (libmongoclient)
@@ -83,3 +78,17 @@ In another terminal:
 5) Run test.js
 
     node test.js
+
+# Tileserver for debuging
+
+The code from [this](https://github.com/mapnik/node-mapnik-sample-code) repo was used to build simple tile server. Client side is basefd on [Leaflet](https://github.com/Leaflet/Leaflet).
+
+To use it, run:
+
+    cd tileserver/
+    npm install express generic-pool mapnik mongodb
+    node import.js coastline shp/ne_10m_coastline.shp
+    node server.js
+
+Server will start. To see the results, open http://localhost:10000/ in the web browser.
+
