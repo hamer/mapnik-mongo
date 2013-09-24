@@ -138,8 +138,10 @@ function render(name, x, y, z, callback) {
 
         map.zoomToBox(mercator.xyz_to_envelope(+x, +y, +z));
         map.render(new mapnik.Image(256, 256), function(err, img) {
-            if (err)
-                return callback(new Error([ "renderi", err.message ].join(": ")));
+            if (err) {
+                process.nextTick(function() { maps.release(name, map); });
+                return callback(new Error([ "render", err.message ].join(": ")));
+            }
 
             img.encode("png", function(err, buffer) {
                 process.nextTick(function() { maps.release(name, map); });
